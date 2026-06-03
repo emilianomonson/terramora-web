@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
 import java.util.Map;
 
 @RestController
@@ -20,6 +21,16 @@ public class AuthController {
 
     @Value("${app.admin.password}")
     private String adminPassword;
+
+    @GetMapping("/ping")
+    public Map<String, Object> ping() {
+        return Map.of(
+                "status", "AUTH_PUBLIC_OK",
+                "timestamp", Instant.now().toString(),
+                "adminEmailConfigured", adminEmail != null && !adminEmail.isBlank(),
+                "adminPasswordConfigured", adminPassword != null && !adminPassword.isBlank()
+        );
+    }
 
     @PostMapping("/login")
     public AuthResponse login(@RequestBody LoginRequest request) {
