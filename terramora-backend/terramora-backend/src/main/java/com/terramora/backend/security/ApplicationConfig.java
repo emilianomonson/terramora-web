@@ -25,8 +25,8 @@ public class ApplicationConfig {
     @Bean
     public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
         return username -> {
-            String cleanUsername = username.trim().toLowerCase();
-            String cleanAdminEmail = adminEmail.trim().toLowerCase();
+            String cleanUsername = username == null ? "" : username.trim().toLowerCase();
+            String cleanAdminEmail = adminEmail == null ? "" : adminEmail.trim().toLowerCase();
 
             if (!cleanUsername.equals(cleanAdminEmail)) {
                 throw new UsernameNotFoundException("Usuario administrador no encontrado.");

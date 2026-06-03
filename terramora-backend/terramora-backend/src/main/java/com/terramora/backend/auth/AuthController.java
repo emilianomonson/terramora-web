@@ -2,10 +2,8 @@ package com.terramora.backend.auth;
 
 import com.terramora.backend.security.JwtService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -15,31 +13,39 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
+
+    @Value("${app.admin.email}")
+    private String adminEmail;
+
+    @Value("${app.admin.password}")
+    private String adminPassword;
 
     @PostMapping("/login")
     public AuthResponse login(@RequestBody LoginRequest request) {
         String email = request.getEmail() == null ? "" : request.getEmail().trim().toLowerCase();
         String password = request.getPassword() == null ? "" : request.getPassword();
 
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        email,
-                        password
-                )
-        );
+        String expectedEmail = adminEmail == null ? "" : adminEmail.trim().toLowerCase();
+        String expectedPassword = adminPassword == null ? "" : adminPassword;
+
+        if (!email.equals(expectedEmail) || !password.equals(expectedPassword)) {
+            throw new InvalidLoginException();
+        }
 
         String token = jwtService.generateToken(email);
 
         return new AuthResponse(token);
     }
 
-    @ExceptionHandler(BadCredentialsException.class)
+    @ExceptionHandler(InvalidLoginException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public Map<String, String> handleBadCredentials() {
+    public Map<String, String> handleInvalidLogin() {
         return Map.of(
                 "message", "Email o contraseña incorrectos."
         );
+    }
+
+    private static class InvalidLoginException extends RuntimeException {
     }
 }
