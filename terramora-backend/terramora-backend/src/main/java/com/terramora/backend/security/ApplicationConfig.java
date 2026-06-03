@@ -1,6 +1,8 @@
 package com.terramora.backend.security;
 
-import org.springframework.beans.factory.annotation.Value;
+import com.terramora.backend.model.AdminUser;
+import com.terramora.backend.repository.AdminUserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,28 +16,27 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
+@RequiredArgsConstructor
 public class ApplicationConfig {
 
-    @Value("${app.admin.email}")
-    private String adminEmail;
-
-    @Value("${app.admin.password}")
-    private String adminPassword;
+    private final AdminUserRepository adminUserRepository;
 
     @Bean
-    public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
+    public UserDetailsService userDetailsService() {
         return username -> {
-            String cleanUsername = username == null ? "" : username.trim().toLowerCase();
-            String cleanAdminEmail = adminEmail == null ? "" : adminEmail.trim().toLowerCase();
+            String email = username == null ? "" : username.trim().toLowerCase();
 
-            if (!cleanUsername.equals(cleanAdminEmail)) {
-                throw new UsernameNotFoundException("Usuario administrador no encontrado.");
+            AdminUser adminUser = adminUserRepository.findByEmail(email)
+                    .orElseThrow(() -> new UsernameNotFoundException("Usuario administrador no encontrado."));
+
+            if (!Boolean.TRUE.equals(adminUser.getEnabled())) {
+                throw new UsernameNotFoundException("Usuario administrador deshabilitado.");
             }
 
             return User.builder()
-                    .username(cleanAdminEmail)
-                    .password(passwordEncoder.encode(adminPassword))
-                    .roles("ADMIN")
+                    .username(adminUser.getEmail())
+                    .password(adminUser.getPassword())
+                    .roles(adminUser.getRole())
                     .build();
         };
     }
@@ -47,6 +48,7 @@ public class ApplicationConfig {
     ) {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(userDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder);
+
         return authProvider;
     }
 
