@@ -16,7 +16,7 @@ export class PropertyDetailComponent implements OnInit {
   selectedImage = '';
   isLoading = true;
 
-  whatsappNumber = '5493571000000';
+  whatsappNumber = '5493571614279';
 
   constructor(
     private route: ActivatedRoute,
