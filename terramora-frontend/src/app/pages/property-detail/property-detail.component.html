@@ -1,0 +1,255 @@
+<main class="min-h-screen bg-terramora-dark text-white">
+  <app-navbar></app-navbar>
+
+  @if (isLoading) {
+    <section class="px-6 pb-24 pt-36 lg:px-14">
+      <div class="mx-auto max-w-7xl">
+        <div class="animate-pulse rounded-[34px] border border-white/10 bg-white/[0.03] p-10">
+          <div class="h-8 w-48 rounded-xl bg-white/10"></div>
+          <div class="mt-8 h-16 max-w-3xl rounded-xl bg-white/10"></div>
+          <div class="mt-8 h-[520px] rounded-[34px] bg-white/10"></div>
+        </div>
+      </div>
+    </section>
+  }
+
+  @if (!isLoading && property) {
+    <section class="relative overflow-hidden px-6 pb-24 pt-36 lg:px-14">
+      <div class="absolute left-[-10%] top-0 h-[420px] w-[420px] rounded-full bg-terramora-purple/20 blur-[130px]"></div>
+      <div class="absolute right-[-10%] top-32 h-[360px] w-[360px] rounded-full bg-terramora-purple/10 blur-[130px]"></div>
+
+      <div class="relative mx-auto max-w-7xl">
+
+        <!-- Volver -->
+        <a
+          routerLink="/propiedades"
+          class="mb-8 inline-flex items-center rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-bold text-white/75 transition hover:bg-white/10 hover:text-white"
+        >
+          ← Volver a propiedades
+        </a>
+
+        <!-- Header -->
+        <div class="mb-10 grid gap-8 lg:grid-cols-[1.3fr_0.7fr] lg:items-end">
+          <div>
+            <div class="mb-5 flex flex-wrap gap-3">
+              <span class="rounded-full bg-terramora-purple px-4 py-2 text-xs font-bold uppercase tracking-wider text-white">
+                {{ formatOperation(property.operation) }}
+              </span>
+
+              <span class="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-bold uppercase tracking-wider text-white/75">
+                {{ formatType(property.type) }}
+              </span>
+
+              @if (property.featured) {
+                <span class="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-bold uppercase tracking-wider text-white/75">
+                  Destacada
+                </span>
+              }
+            </div>
+
+            <h1 class="max-w-4xl text-4xl font-black leading-tight tracking-tight md:text-6xl">
+              {{ property.title }}
+            </h1>
+
+            <p class="mt-4 text-base font-medium text-white/55">
+              {{ property.location }} · {{ property.city }}
+            </p>
+          </div>
+
+          <!-- Precio y WhatsApp -->
+          <div class="rounded-[28px] border border-white/10 bg-white/[0.04] p-6 shadow-2xl shadow-black/30 backdrop-blur-xl">
+            <p class="text-sm font-bold uppercase tracking-[0.25em] text-white/45">
+              Precio
+            </p>
+
+            <p class="mt-3 text-4xl font-black text-terramora-purple">
+              {{ property.currency }} {{ property.price.toLocaleString('es-AR') }}
+            </p>
+
+            <button
+              (click)="openWhatsApp()"
+              class="mt-6 w-full rounded-2xl bg-terramora-purple px-6 py-4 text-sm font-bold text-white transition hover:-translate-y-1 hover:opacity-90"
+            >
+              Consultar por WhatsApp
+            </button>
+          </div>
+        </div>
+
+        <!-- Galería -->
+        <div class="grid gap-6 lg:grid-cols-[1fr_260px]">
+          <div class="overflow-hidden rounded-[34px] border border-white/10 bg-black shadow-2xl shadow-black/40">
+            <img
+              [src]="getDetailImage(selectedImage)"
+              [alt]="property.title"
+              class="h-[520px] w-full object-cover"
+            />
+          </div>
+
+          <div class="grid grid-cols-3 gap-4 lg:grid-cols-1">
+            @for (image of property.images; track image) {
+              <button
+                (click)="selectImage(image)"
+                class="overflow-hidden rounded-3xl border bg-black transition hover:-translate-y-1"
+                [class.border-terramora-purple]="selectedImage === image"
+                [class.border-white\/10]="selectedImage !== image"
+              >
+                <img
+                  [src]="getThumbnailImage(image)"
+                  [alt]="property.title"
+                  loading="lazy"
+                  class="h-32 w-full object-cover"
+                />
+              </button>
+            }
+          </div>
+        </div>
+
+        <!-- Contenido -->
+        <div class="mt-10 grid gap-8 lg:grid-cols-[1fr_360px]">
+
+          <!-- Descripción -->
+          <div class="rounded-[34px] border border-white/10 bg-white/[0.03] p-8 shadow-2xl shadow-black/25 backdrop-blur-xl">
+            <h2 class="text-2xl font-black text-white">
+              Descripción
+            </h2>
+
+            <p class="mt-5 text-base leading-8 text-white/60">
+              {{ property.description }}
+            </p>
+
+            <div class="mt-8 grid gap-4 md:grid-cols-3">
+              <div class="rounded-3xl border border-white/10 bg-black/25 p-5">
+                <p class="text-2xl font-black text-white">
+                  {{ property.bedrooms || '-' }}
+                </p>
+                <p class="mt-1 text-sm text-white/50">
+                  Dormitorios
+                </p>
+              </div>
+
+              <div class="rounded-3xl border border-white/10 bg-black/25 p-5">
+                <p class="text-2xl font-black text-white">
+                  {{ property.bathrooms || '-' }}
+                </p>
+                <p class="mt-1 text-sm text-white/50">
+                  Baños
+                </p>
+              </div>
+
+              <div class="rounded-3xl border border-white/10 bg-black/25 p-5">
+                <p class="text-2xl font-black text-white">
+                  {{ property.area }}m²
+                </p>
+                <p class="mt-1 text-sm text-white/50">
+                  Superficie total
+                </p>
+              </div>
+            </div>
+
+            <div class="mt-4 grid gap-4 md:grid-cols-2">
+              <div class="rounded-3xl border border-white/10 bg-black/25 p-5">
+                <p class="text-2xl font-black text-white">
+                  @if (property.coveredArea) {
+                    {{ property.coveredArea }}m²
+                  } @else {
+                    -
+                  }
+                </p>
+                <p class="mt-1 text-sm text-white/50">
+                  Superficie cubierta
+                </p>
+              </div>
+
+              <div class="rounded-3xl border border-white/10 bg-black/25 p-5">
+                <p class="text-2xl font-black text-white">
+                  {{ property.city }}
+                </p>
+                <p class="mt-1 text-sm text-white/50">
+                  Ciudad
+                </p>
+              </div>
+            </div>
+
+            <h3 class="mt-10 text-xl font-black text-white">
+              Características
+            </h3>
+
+            <div class="mt-5 flex flex-wrap gap-3">
+              @for (feature of property.features; track feature) {
+                <span class="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-white/65">
+                  {{ feature }}
+                </span>
+              }
+            </div>
+          </div>
+
+          <!-- Card WhatsApp -->
+          <aside class="h-fit rounded-[34px] border border-white/10 bg-white/[0.03] p-7 shadow-2xl shadow-black/25 backdrop-blur-xl">
+            <h2 class="text-2xl font-black text-white">
+              ¿Te interesa esta propiedad?
+            </h2>
+
+            <p class="mt-3 text-sm leading-6 text-white/55">
+              Contactanos por WhatsApp y recibí más información, fotos, ubicación exacta o coordiná una visita.
+            </p>
+
+            <div class="mt-6 rounded-3xl border border-white/10 bg-black/25 p-5">
+              <p class="text-sm font-bold uppercase tracking-[0.25em] text-white/40">
+                Consulta rápida
+              </p>
+
+              <p class="mt-3 text-lg font-black text-white">
+                {{ property.title }}
+              </p>
+
+              <p class="mt-2 text-sm text-white/55">
+                {{ property.location }} · {{ property.city }}
+              </p>
+
+              <p class="mt-3 text-xl font-black text-terramora-purple">
+                {{ property.currency }} {{ property.price.toLocaleString('es-AR') }}
+              </p>
+            </div>
+
+            <button
+              type="button"
+              (click)="openWhatsApp()"
+              class="mt-6 w-full rounded-2xl bg-terramora-purple px-6 py-4 text-sm font-bold text-white transition hover:-translate-y-1 hover:opacity-90"
+            >
+              Consultar por WhatsApp
+            </button>
+
+            <a
+              routerLink="/propiedades"
+              class="mt-4 block w-full rounded-2xl border border-white/10 bg-white/5 px-6 py-4 text-center text-sm font-bold text-white/70 transition hover:bg-white/10 hover:text-white"
+            >
+              Ver más propiedades
+            </a>
+          </aside>
+        </div>
+
+      </div>
+    </section>
+  }
+
+  @if (!isLoading && !property) {
+    <section class="px-6 pb-24 pt-36 lg:px-14">
+      <div class="mx-auto max-w-7xl rounded-[34px] border border-white/10 bg-white/[0.03] p-10 text-center">
+        <h1 class="text-3xl font-black text-white">
+          Propiedad no encontrada
+        </h1>
+
+        <p class="mt-3 text-white/55">
+          La propiedad que estás buscando no existe o fue eliminada.
+        </p>
+
+        <a
+          routerLink="/propiedades"
+          class="mt-6 inline-flex rounded-2xl bg-terramora-purple px-6 py-3 text-sm font-bold text-white transition hover:opacity-90"
+        >
+          Volver a propiedades
+        </a>
+      </div>
+    </section>
+  }
+</main>

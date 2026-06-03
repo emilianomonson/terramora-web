@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+@theme {
+  --color-terramora-purple: #A45CC7;
+  --color-terramora-dark: #070713;
+  --color-terramora-softDark: #101020;
+  --color-terramora-grayText: #B8B8C8;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: #070713;
+  color: white;
+  font-family: Arial, sans-serif;
+}

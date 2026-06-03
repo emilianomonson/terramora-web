@@ -1,0 +1,732 @@
+<main class="min-h-screen bg-terramora-dark text-white">
+  <app-navbar></app-navbar>
+
+  <section class="px-6 pb-24 pt-36 lg:px-14">
+    <div class="mx-auto max-w-7xl">
+
+      <!-- Header -->
+      <div class="mb-10 grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
+        <div>
+          <p class="mb-4 flex items-center gap-4 text-xs font-bold uppercase tracking-[0.35em] text-terramora-purple md:text-sm">
+            Panel administrador
+            <span class="h-px w-16 bg-terramora-purple"></span>
+          </p>
+
+          <h1 class="text-4xl font-black leading-tight tracking-tight md:text-5xl">
+            Gestión de
+            <span class="text-terramora-purple"> propiedades.</span>
+          </h1>
+
+          <p class="mt-4 max-w-2xl text-sm leading-7 text-white/55">
+            Cargá, editá y eliminá propiedades que luego se muestran automáticamente en la web.
+          </p>
+        </div>
+
+        <div class="rounded-[28px] border border-white/10 bg-white/[0.035] p-6 shadow-2xl shadow-black/25 backdrop-blur-xl">
+          <div class="flex items-center justify-between gap-4">
+            <div>
+              <p class="text-sm font-bold uppercase tracking-[0.25em] text-white/40">
+                Total cargadas
+              </p>
+
+              <p class="mt-3 text-4xl font-black text-terramora-purple">
+                {{ properties.length }}
+              </p>
+            </div>
+
+            <button
+              (click)="logout()"
+              class="rounded-2xl border border-red-500/30 bg-red-500/10 px-5 py-3 text-sm font-bold text-red-200 transition hover:bg-red-500/20"
+            >
+              Salir
+            </button>
+          </div>
+        </div>
+      </div>
+
+      @if (validationErrors.length > 0) {
+        <div class="mb-8 rounded-[28px] border border-red-500/25 bg-red-500/10 p-5 text-red-100">
+          <h3 class="text-lg font-black">
+            Revisá estos datos antes de guardar
+          </h3>
+
+          <ul class="mt-3 list-disc space-y-1 pl-5 text-sm">
+            @for (error of validationErrors; track error) {
+              <li>{{ error }}</li>
+            }
+          </ul>
+        </div>
+      }
+
+      @if (successMessage) {
+        <div class="mb-8 rounded-[28px] border border-green-500/25 bg-green-500/10 p-5 text-green-100">
+          <p class="text-sm font-bold">
+            {{ successMessage }}
+          </p>
+        </div>
+      }
+
+      @if (errorMessage) {
+        <div class="mb-8 rounded-[28px] border border-red-500/25 bg-red-500/10 p-5 text-red-100">
+          <p class="text-sm font-bold">
+            {{ errorMessage }}
+          </p>
+        </div>
+      }
+
+      <!-- Formulario -->
+      <section class="mb-12 rounded-[34px] border border-white/10 bg-white/[0.035] p-6 shadow-2xl shadow-black/30 backdrop-blur-xl md:p-8">
+        
+        <div class="mb-8 flex flex-col justify-between gap-4 border-b border-white/10 pb-6 md:flex-row md:items-center">
+          <div>
+            <h2 class="text-2xl font-black text-white">
+              {{ isEditing ? 'Editar propiedad' : 'Nueva propiedad' }}
+            </h2>
+
+            <p class="mt-2 text-sm text-white/50">
+              Completá los datos por secciones para mantener la carga ordenada.
+            </p>
+          </div>
+
+          @if (isEditing) {
+            <button
+              (click)="resetForm()"
+              class="rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-bold text-white/75 transition hover:bg-white/10"
+            >
+              Cancelar edición
+            </button>
+          }
+        </div>
+
+        <form (ngSubmit)="saveProperty()" class="space-y-8">
+
+          <!-- Datos principales -->
+          <div class="rounded-[28px] border border-white/10 bg-black/20 p-5 md:p-6">
+            <div class="mb-5">
+              <h3 class="text-lg font-black text-white">
+                1. Datos principales
+              </h3>
+
+              <p class="mt-1 text-sm text-white/45">
+                Información básica que verá el usuario en las cards y en el detalle.
+              </p>
+            </div>
+
+            <div class="grid gap-4 md:grid-cols-2">
+              <input
+                [(ngModel)]="form.title"
+                name="title"
+                required
+                type="text"
+                placeholder="Título de la propiedad"
+                class="h-12 rounded-2xl border border-white/10 bg-black/35 px-4 text-sm text-white outline-none placeholder:text-white/35 focus:border-terramora-purple"
+              />
+
+              <input
+                [(ngModel)]="form.location"
+                name="location"
+                required
+                type="text"
+                placeholder="Zona / barrio / ubicación"
+                class="h-12 rounded-2xl border border-white/10 bg-black/35 px-4 text-sm text-white outline-none placeholder:text-white/35 focus:border-terramora-purple"
+              />
+            </div>
+
+            <textarea
+              [(ngModel)]="form.description"
+              name="description"
+              required
+              rows="4"
+              placeholder="Descripción de la propiedad"
+              class="mt-4 w-full resize-none rounded-2xl border border-white/10 bg-black/35 px-4 py-4 text-sm text-white outline-none placeholder:text-white/35 focus:border-terramora-purple"
+            ></textarea>
+          </div>
+
+          <!-- Operación y precio -->
+          <div class="rounded-[28px] border border-white/10 bg-black/20 p-5 md:p-6">
+            <div class="mb-5">
+              <h3 class="text-lg font-black text-white">
+                2. Operación y precio
+              </h3>
+
+              <p class="mt-1 text-sm text-white/45">
+                Definí si es venta o alquiler, el tipo de propiedad y su precio.
+              </p>
+            </div>
+
+            <div class="grid gap-4 md:grid-cols-4">
+              <select
+                [(ngModel)]="form.operation"
+                name="operation"
+                class="h-12 rounded-2xl border border-white/10 bg-black/35 px-4 text-sm text-white outline-none focus:border-terramora-purple"
+              >
+                <option value="VENTA">Venta</option>
+                <option value="ALQUILER">Alquiler</option>
+              </select>
+
+              <select
+                [(ngModel)]="form.type"
+                name="type"
+                class="h-12 rounded-2xl border border-white/10 bg-black/35 px-4 text-sm text-white outline-none focus:border-terramora-purple"
+              >
+                <option value="CASA">Casa</option>
+                <option value="DEPARTAMENTO">Departamento</option>
+                <option value="TERRENO">Terreno</option>
+                <option value="LOCAL">Local</option>
+                <option value="CAMPO">Campo</option>
+                <option value="GALPON">Galpón</option>
+                <option value="COCHERA">Cochera</option>
+              </select>
+
+              <select
+                [(ngModel)]="form.currency"
+                name="currency"
+                class="h-12 rounded-2xl border border-white/10 bg-black/35 px-4 text-sm text-white outline-none focus:border-terramora-purple"
+              >
+                <option value="USD">USD</option>
+                <option value="$">$</option>
+              </select>
+
+              <input
+                [(ngModel)]="form.price"
+                name="price"
+                required
+                type="number"
+                placeholder="Precio"
+                class="h-12 rounded-2xl border border-white/10 bg-black/35 px-4 text-sm text-white outline-none placeholder:text-white/35 focus:border-terramora-purple"
+              />
+            </div>
+          </div>
+
+          <!-- Ubicación y superficies -->
+          <div class="rounded-[28px] border border-white/10 bg-black/20 p-5 md:p-6">
+            <div class="mb-5">
+              <h3 class="text-lg font-black text-white">
+                3. Ubicación y superficies
+              </h3>
+
+              <p class="mt-1 text-sm text-white/45">
+                Estos datos ayudan al usuario a filtrar y comparar propiedades.
+              </p>
+            </div>
+
+            <div class="grid gap-4 md:grid-cols-2">
+              <label class="block">
+                <span class="mb-2 block text-xs font-bold uppercase tracking-[0.2em] text-white/45">
+                  Ciudad
+                </span>
+
+                <input
+                  [(ngModel)]="form.city"
+                  name="city"
+                  required
+                  type="text"
+                  placeholder="Ej: Río Tercero"
+                  class="h-12 w-full rounded-2xl border border-white/10 bg-black/35 px-4 text-sm text-white outline-none placeholder:text-white/35 focus:border-terramora-purple"
+                />
+              </label>
+
+              <label class="block">
+                <span class="mb-2 block text-xs font-bold uppercase tracking-[0.2em] text-white/45">
+                  Provincia
+                </span>
+
+                <input
+                  [(ngModel)]="form.province"
+                  name="province"
+                  type="text"
+                  placeholder="Ej: Córdoba"
+                  class="h-12 w-full rounded-2xl border border-white/10 bg-black/35 px-4 text-sm text-white outline-none placeholder:text-white/35 focus:border-terramora-purple"
+                />
+              </label>
+            </div>
+
+            <div class="mt-4 grid gap-4 md:grid-cols-2">
+              <label class="block">
+                <span class="mb-2 block text-xs font-bold uppercase tracking-[0.2em] text-white/45">
+                  Superficie total
+                </span>
+
+                <div class="relative">
+                  <input
+                    [(ngModel)]="form.area"
+                    name="area"
+                    required
+                    type="number"
+                    placeholder="Ej: 280"
+                    class="h-12 w-full rounded-2xl border border-white/10 bg-black/35 px-4 pr-14 text-sm text-white outline-none placeholder:text-white/35 focus:border-terramora-purple"
+                  />
+
+                  <span class="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-sm font-bold text-white/35">
+                    m²
+                  </span>
+                </div>
+              </label>
+
+              <label class="block">
+                <span class="mb-2 block text-xs font-bold uppercase tracking-[0.2em] text-white/45">
+                  Superficie cubierta
+                </span>
+
+                <div class="relative">
+                  <input
+                    [(ngModel)]="form.coveredArea"
+                    name="coveredArea"
+                    type="number"
+                    placeholder="Ej: 180"
+                    class="h-12 w-full rounded-2xl border border-white/10 bg-black/35 px-4 pr-14 text-sm text-white outline-none placeholder:text-white/35 focus:border-terramora-purple"
+                  />
+
+                  <span class="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-sm font-bold text-white/35">
+                    m²
+                  </span>
+                </div>
+              </label>
+            </div>
+
+            <div class="mt-4 grid gap-4 md:grid-cols-2">
+              <label class="block">
+                <span class="mb-2 block text-xs font-bold uppercase tracking-[0.2em] text-white/45">
+                  Dormitorios
+                </span>
+
+                <input
+                  [(ngModel)]="form.bedrooms"
+                  name="bedrooms"
+                  type="number"
+                  placeholder="Ej: 3"
+                  class="h-12 w-full rounded-2xl border border-white/10 bg-black/35 px-4 text-sm text-white outline-none placeholder:text-white/35 focus:border-terramora-purple"
+                />
+              </label>
+
+              <label class="block">
+                <span class="mb-2 block text-xs font-bold uppercase tracking-[0.2em] text-white/45">
+                  Baños
+                </span>
+
+                <input
+                  [(ngModel)]="form.bathrooms"
+                  name="bathrooms"
+                  type="number"
+                  placeholder="Ej: 2"
+                  class="h-12 w-full rounded-2xl border border-white/10 bg-black/35 px-4 text-sm text-white outline-none placeholder:text-white/35 focus:border-terramora-purple"
+                />
+              </label>
+            </div>
+          </div>
+
+          <!-- Imágenes y características -->
+          <div class="grid gap-6 lg:grid-cols-[1fr_0.8fr]">
+
+            <!-- Imágenes -->
+            <div class="rounded-[28px] border border-white/10 bg-black/20 p-5 md:p-6">
+              <div class="mb-5">
+                <h3 class="text-lg font-black text-white">
+                  4. Imágenes
+                </h3>
+
+                <p class="mt-1 text-sm text-white/45">
+                  Subí hasta {{ maxImages }} imágenes. La primera imagen será la portada.
+                </p>
+              </div>
+
+              <div class="rounded-3xl border border-dashed border-white/15 bg-black/25 p-5">
+                <input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  (change)="onFilesSelected($event)"
+                  class="block w-full cursor-pointer rounded-2xl border border-white/10 bg-black/35 px-4 py-3 text-sm text-white file:mr-4 file:rounded-xl file:border-0 file:bg-terramora-purple file:px-4 file:py-2 file:text-sm file:font-bold file:text-white"
+                />
+
+                <div class="mt-4 flex flex-col justify-between gap-3 md:flex-row md:items-center">
+                  <p class="text-sm text-white/45">
+                    @if (selectedFiles.length > 0) {
+                      {{ selectedFiles.length }} imagen/es seleccionada/s.
+                    } @else {
+                      No hay imágenes seleccionadas.
+                    }
+                  </p>
+
+                  <button
+                    type="button"
+                    (click)="uploadSelectedImages()"
+                    [disabled]="isUploadingImages || selectedFiles.length === 0"
+                    class="rounded-2xl bg-terramora-purple px-5 py-3 text-sm font-bold text-white transition hover:-translate-y-1 hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {{ isUploadingImages ? 'Subiendo...' : 'Subir imágenes' }}
+                  </button>
+                </div>
+
+                <p class="mt-3 text-xs leading-5 text-white/35">
+                  Máximo {{ maxImageSizeMb }}MB por imagen. Usá fotos horizontales para mejores resultados.
+                </p>
+
+                @if (uploadSuccessMessage) {
+                  <div class="mt-4 rounded-2xl border border-green-500/25 bg-green-500/10 px-4 py-3 text-sm font-bold text-green-100">
+                    {{ uploadSuccessMessage }}
+                  </div>
+                }
+
+                @if (uploadErrorMessage) {
+                  <div class="mt-4 rounded-2xl border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm font-bold text-red-100">
+                    {{ uploadErrorMessage }}
+                  </div>
+                }
+              </div>
+
+              <textarea
+                [(ngModel)]="form.imagesText"
+                name="imagesText"
+                rows="6"
+                placeholder="Las URLs de Cloudinary aparecerán acá automáticamente"
+                class="mt-4 w-full resize-none rounded-2xl border border-white/10 bg-black/35 px-4 py-4 text-sm text-white outline-none placeholder:text-white/35 focus:border-terramora-purple"
+              ></textarea>
+
+              @if (parseLines(form.imagesText).length > 0) {
+                <div class="mt-4">
+                  <div class="mb-3 flex items-center justify-between gap-3">
+                    <p class="text-sm font-bold text-white/60">
+                      Imágenes cargadas
+                    </p>
+
+                    <p class="text-xs font-semibold text-white/35">
+                      {{ parseLines(form.imagesText).length }} / {{ maxImages }}
+                    </p>
+                  </div>
+
+                  <div class="grid gap-3 sm:grid-cols-2">
+                    @for (image of parseLines(form.imagesText); track image; let i = $index) {
+                      <div class="group overflow-hidden rounded-3xl border border-white/10 bg-black/30">
+                        <div class="relative">
+                          <img
+                            [src]="image"
+                            alt="Vista previa"
+                            class="h-40 w-full object-cover"
+                          />
+
+                          @if (i === 0) {
+                            <span class="absolute left-3 top-3 rounded-xl bg-terramora-purple px-3 py-2 text-xs font-black text-white shadow-lg shadow-black/30">
+                              Portada
+                            </span>
+                          }
+
+                          <button
+                            type="button"
+                            (click)="removeImageUrl(image)"
+                            class="absolute right-3 top-3 rounded-xl bg-red-500/90 px-3 py-2 text-xs font-black text-white opacity-0 transition group-hover:opacity-100"
+                          >
+                            Quitar
+                          </button>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2 p-3">
+                          <button
+                            type="button"
+                            (click)="moveImageUp(i)"
+                            [disabled]="i === 0"
+                            class="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs font-bold text-white/70 transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-35"
+                          >
+                            Subir
+                          </button>
+
+                          <button
+                            type="button"
+                            (click)="moveImageDown(i)"
+                            [disabled]="i === parseLines(form.imagesText).length - 1"
+                            class="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs font-bold text-white/70 transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-35"
+                          >
+                            Bajar
+                          </button>
+                        </div>
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+
+            <!-- Características -->
+            <div class="rounded-[28px] border border-white/10 bg-black/20 p-5 md:p-6">
+              <div class="mb-5">
+                <h3 class="text-lg font-black text-white">
+                  5. Características
+                </h3>
+
+                <p class="mt-1 text-sm text-white/45">
+                  Escribí una característica por línea.
+                </p>
+              </div>
+
+              <textarea
+                [(ngModel)]="form.featuresText"
+                name="featuresText"
+                rows="7"
+                placeholder="Cochera&#10;Patio&#10;Pileta&#10;Cocina integrada"
+                class="w-full resize-none rounded-2xl border border-white/10 bg-black/35 px-4 py-4 text-sm text-white outline-none placeholder:text-white/35 focus:border-terramora-purple"
+              ></textarea>
+
+              @if (form.featuresText.trim().length > 0) {
+                <div class="mt-4 flex flex-wrap gap-2">
+                  @for (feature of parseLines(form.featuresText); track feature) {
+                    <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-bold text-white/65">
+                      {{ feature }}
+                    </span>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Publicación -->
+          <div class="rounded-[28px] border border-white/10 bg-black/20 p-5 md:p-6">
+            <div class="flex flex-col justify-between gap-5 md:flex-row md:items-center">
+              <div>
+                <h3 class="text-lg font-black text-white">
+                  6. Opciones de publicación
+                </h3>
+
+                <p class="mt-1 text-sm text-white/45">
+                  Marcá como destacada para que aparezca en el Home.
+                </p>
+              </div>
+
+              <label class="flex h-12 w-fit cursor-pointer items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-5 text-sm font-bold text-white/75 transition hover:bg-white/10">
+                <input
+                  [(ngModel)]="form.featured"
+                  name="featured"
+                  type="checkbox"
+                  class="h-4 w-4"
+                />
+                Mostrar como destacada
+              </label>
+            </div>
+          </div>
+
+          <!-- Acciones -->
+          <div class="sticky bottom-4 z-20 rounded-[28px] border border-white/10 bg-[#080814]/90 p-4 shadow-2xl shadow-black/40 backdrop-blur-xl">
+            <div class="flex flex-col justify-between gap-4 md:flex-row md:items-center">
+              <p class="text-sm text-white/50">
+                {{ isEditing ? 'Estás editando una propiedad existente.' : 'Vas a crear una nueva propiedad.' }}
+              </p>
+
+              <div class="flex flex-col gap-3 sm:flex-row">
+                @if (isEditing) {
+                  <button
+                    type="button"
+                    (click)="resetForm()"
+                    class="rounded-2xl border border-white/10 bg-white/5 px-6 py-3 text-sm font-bold text-white/75 transition hover:bg-white/10"
+                  >
+                    Cancelar
+                  </button>
+                }
+
+                <button
+                  type="submit"
+                  class="rounded-2xl bg-terramora-purple px-7 py-3 text-sm font-bold text-white shadow-xl shadow-terramora-purple/20 transition hover:-translate-y-1 hover:opacity-90"
+                >
+                  {{ isEditing ? 'Guardar cambios' : 'Crear propiedad' }}
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </form>
+      </section>
+
+      <!-- Listado -->
+      <section>
+        <div class="mb-6 flex flex-col justify-between gap-4 md:flex-row md:items-center">
+          <div>
+            <h2 class="text-2xl font-black text-white">
+              Propiedades cargadas
+            </h2>
+
+            <p class="mt-2 text-sm text-white/50">
+              {{ filteredAdminProperties.length }} resultado/s de {{ properties.length }} propiedades cargadas
+            </p>
+          </div>
+
+          <button
+            (click)="resetForm()"
+            class="w-fit rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-bold text-white/75 transition hover:bg-white/10"
+          >
+            Limpiar formulario
+          </button>
+        </div>
+
+        <!-- Filtros admin -->
+        <div class="mb-6 rounded-[28px] border border-white/10 bg-white/[0.03] p-5 shadow-2xl shadow-black/20 backdrop-blur-xl">
+          <div class="grid gap-4 lg:grid-cols-[1fr_180px_180px_auto]">
+            <input
+              [(ngModel)]="adminSearchTerm"
+              (ngModelChange)="onAdminFiltersChange()"
+              type="text"
+              placeholder="Buscar por título, ciudad o ubicación..."
+              class="h-12 rounded-2xl border border-white/10 bg-black/35 px-4 text-sm text-white outline-none placeholder:text-white/35 focus:border-terramora-purple"
+            />
+
+            <select
+              [(ngModel)]="adminFilterOperation"
+              (ngModelChange)="onAdminFiltersChange()"
+              class="h-12 rounded-2xl border border-white/10 bg-black/35 px-4 text-sm text-white outline-none focus:border-terramora-purple"
+            >
+              <option value="">Operación</option>
+              <option value="VENTA">Venta</option>
+              <option value="ALQUILER">Alquiler</option>
+            </select>
+
+            <select
+              [(ngModel)]="adminFilterType"
+              (ngModelChange)="onAdminFiltersChange()"
+              class="h-12 rounded-2xl border border-white/10 bg-black/35 px-4 text-sm text-white outline-none focus:border-terramora-purple"
+            >
+              <option value="">Tipo</option>
+              <option value="CASA">Casa</option>
+              <option value="DEPARTAMENTO">Departamento</option>
+              <option value="TERRENO">Terreno</option>
+              <option value="LOCAL">Local</option>
+              <option value="CAMPO">Campo</option>
+              <option value="GALPON">Galpón</option>
+              <option value="COCHERA">Cochera</option>
+            </select>
+
+            <button
+              type="button"
+              (click)="clearAdminFilters()"
+              class="h-12 rounded-2xl border border-white/10 bg-white/5 px-5 text-sm font-bold text-white/75 transition hover:bg-white/10"
+            >
+              Limpiar
+            </button>
+          </div>
+        </div>
+
+        @if (isLoading) {
+          <div class="rounded-[30px] border border-white/10 bg-white/[0.03] p-8 text-white/60">
+            Cargando propiedades...
+          </div>
+        } @else if (filteredAdminProperties.length === 0) {
+          <div class="rounded-[30px] border border-white/10 bg-white/[0.03] p-8 text-center">
+            <h3 class="text-2xl font-black text-white">
+              No se encontraron propiedades
+            </h3>
+
+            <p class="mt-3 text-sm text-white/50">
+              Probá cambiar los filtros o limpiar la búsqueda.
+            </p>
+
+            <button
+              type="button"
+              (click)="clearAdminFilters()"
+              class="mt-6 rounded-2xl bg-terramora-purple px-6 py-3 text-sm font-bold text-white transition hover:opacity-90"
+            >
+              Limpiar filtros
+            </button>
+          </div>
+        } @else {
+          <div class="grid gap-5">
+            @for (property of paginatedAdminProperties; track property.id) {
+              <article class="grid gap-5 rounded-[30px] border border-white/10 bg-white/[0.03] p-5 shadow-2xl shadow-black/20 md:grid-cols-[180px_1fr_auto] md:items-center">
+                
+                <div class="h-32 overflow-hidden rounded-3xl bg-black/40">
+                  <img
+                    [src]="property.images && property.images.length > 0 ? property.images[0] : ''"
+                    [alt]="property.title"
+                    class="h-full w-full object-cover"
+                  />
+                </div>
+
+                <div>
+                  <div class="mb-3 flex flex-wrap gap-2">
+                    <span class="rounded-full bg-terramora-purple px-3 py-1 text-xs font-bold text-white">
+                      {{ formatOperation(property.operation) }}
+                    </span>
+
+                    <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-bold text-white/70">
+                      {{ formatType(property.type) }}
+                    </span>
+
+                    @if (property.featured) {
+                      <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-bold text-white/70">
+                        Destacada
+                      </span>
+                    }
+                  </div>
+
+                  <h3 class="text-xl font-black text-white">
+                    {{ property.title }}
+                  </h3>
+
+                  <p class="mt-2 text-sm text-white/55">
+                    {{ property.location }} · {{ property.city }}
+                  </p>
+
+                  <p class="mt-2 text-sm font-bold text-terramora-purple">
+                    {{ property.currency }} {{ property.price.toLocaleString('es-AR') }}
+                  </p>
+                </div>
+
+                <div class="flex gap-3 md:flex-col">
+                  <button
+                    (click)="editProperty(property)"
+                    class="rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-bold text-white/75 transition hover:bg-white/10"
+                  >
+                    Editar
+                  </button>
+
+                  <button
+                    (click)="deleteProperty(property.id)"
+                    class="rounded-2xl border border-red-500/30 bg-red-500/10 px-5 py-3 text-sm font-bold text-red-200 transition hover:bg-red-500/20"
+                  >
+                    Eliminar
+                  </button>
+                </div>
+
+              </article>
+            }
+          </div>
+
+          <!-- Paginación -->
+          <div class="mt-8 flex flex-col items-center justify-between gap-4 rounded-[28px] border border-white/10 bg-white/[0.03] p-4 md:flex-row">
+            <p class="text-sm font-semibold text-white/45">
+              Página {{ currentPage }} de {{ totalPages }}
+            </p>
+
+            <div class="flex flex-wrap justify-center gap-2">
+              <button
+                type="button"
+                (click)="previousPage()"
+                [disabled]="currentPage === 1"
+                class="rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-bold text-white/70 transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-35"
+              >
+                Anterior
+              </button>
+
+              @for (page of pages; track page) {
+                <button
+                  type="button"
+                  (click)="goToPage(page)"
+                  [class.bg-terramora-purple]="currentPage === page"
+                  [class.bg-white\/5]="currentPage !== page"
+                  class="rounded-2xl border border-white/10 px-4 py-2 text-sm font-bold text-white transition hover:bg-white/10"
+                >
+                  {{ page }}
+                </button>
+              }
+
+              <button
+                type="button"
+                (click)="nextPage()"
+                [disabled]="currentPage === totalPages"
+                class="rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-bold text-white/70 transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-35"
+              >
+                Siguiente
+              </button>
+            </div>
+          </div>
+        }
+      </section>
+
+    </div>
+  </section>
+</main>

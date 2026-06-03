@@ -1,0 +1,44 @@
+<header class="fixed left-0 top-0 z-50 w-full px-5 py-4 lg:px-14">
+  <div class="mx-auto flex h-[66px] max-w-7xl items-center justify-between rounded-[24px] border border-white/10 bg-[#090914]/80 px-6 shadow-2xl shadow-black/30 backdrop-blur-2xl">
+    
+    <a routerLink="/" class="flex items-center">
+        <img 
+            src="/logo-terramora.png" 
+            alt="Terramora Inmobiliaria"
+            class="h-10 w-auto object-contain"
+        />
+    </a>
+
+    <nav class="hidden items-center gap-8 text-[13px] font-semibold text-white/70 lg:flex">
+        <a routerLink="/" class="text-white transition hover:text-terramora-purple">
+            Inicio
+        </a>
+
+        <a routerLink="/propiedades" class="transition hover:text-white">
+             Propiedades
+        </a>
+
+        <a href="#servicios" class="transition hover:text-white">
+            Servicios
+         </a>
+
+        <a href="#terrenos" class="transition hover:text-white">
+            Terrenos
+        </a>
+
+         <a href="#" class="transition hover:text-white">
+            Contacto
+        </a>
+</nav>
+
+    <!-- Botón desktop -->
+    <button class="hidden rounded-2xl border border-terramora-purple/40 bg-white/5 px-5 py-2.5 text-[13px] font-bold text-white/90 transition duration-300 hover:-translate-y-0.5 hover:bg-terramora-purple hover:shadow-lg hover:shadow-terramora-purple/25 lg:block">
+      Agendar asesoría
+    </button>
+
+    <!-- Botón mobile -->
+    <button class="rounded-xl border border-white/15 bg-white/5 px-4 py-2 text-sm font-semibold text-white lg:hidden">
+      Menú
+    </button>
+  </div>
+</header>

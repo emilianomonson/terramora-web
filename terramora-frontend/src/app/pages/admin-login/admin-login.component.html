@@ -1,0 +1,84 @@
+<main class="min-h-screen bg-terramora-dark text-white">
+  <app-navbar></app-navbar>
+
+  <section class="relative flex min-h-screen items-center justify-center overflow-hidden px-6 py-32 lg:px-14">
+    <div class="absolute left-[-10%] top-0 h-[420px] w-[420px] rounded-full bg-terramora-purple/20 blur-[130px]"></div>
+    <div class="absolute right-[-10%] bottom-0 h-[360px] w-[360px] rounded-full bg-terramora-purple/10 blur-[130px]"></div>
+
+    <div class="relative w-full max-w-md rounded-[34px] border border-white/10 bg-white/[0.035] p-8 shadow-2xl shadow-black/40 backdrop-blur-xl">
+      
+      <div class="mb-8 text-center">
+        <img
+          src="/logo-terramora.png"
+          alt="Terramora Inmobiliaria"
+          class="mx-auto h-14 w-auto object-contain"
+        />
+
+        <p class="mt-6 text-xs font-bold uppercase tracking-[0.35em] text-terramora-purple">
+          Panel administrador
+        </p>
+
+        <h1 class="mt-3 text-3xl font-black text-white">
+          Iniciar sesión
+        </h1>
+
+        <p class="mt-3 text-sm leading-6 text-white/50">
+          Accedé al panel para gestionar propiedades, editar publicaciones y administrar el catálogo.
+        </p>
+      </div>
+
+      <form (ngSubmit)="login()" class="space-y-4">
+        <label class="block">
+          <span class="mb-2 block text-xs font-bold uppercase tracking-[0.2em] text-white/45">
+            Email
+          </span>
+
+          <input
+            [(ngModel)]="email"
+            name="email"
+            type="email"
+            required
+            placeholder="admin@terramora.com"
+            class="h-12 w-full rounded-2xl border border-white/10 bg-black/35 px-4 text-sm text-white outline-none placeholder:text-white/35 focus:border-terramora-purple"
+          />
+        </label>
+
+        <label class="block">
+          <span class="mb-2 block text-xs font-bold uppercase tracking-[0.2em] text-white/45">
+            Contraseña
+          </span>
+
+          <input
+            [(ngModel)]="password"
+            name="password"
+            type="password"
+            required
+            placeholder="Ingresá tu contraseña"
+            class="h-12 w-full rounded-2xl border border-white/10 bg-black/35 px-4 text-sm text-white outline-none placeholder:text-white/35 focus:border-terramora-purple"
+          />
+        </label>
+
+        @if (errorMessage) {
+          <div class="rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm font-semibold text-red-200">
+            {{ errorMessage }}
+          </div>
+        }
+
+        <button
+          type="submit"
+          [disabled]="isLoading"
+          class="w-full rounded-2xl bg-terramora-purple px-6 py-4 text-sm font-bold text-white shadow-xl shadow-terramora-purple/20 transition hover:-translate-y-1 hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {{ isLoading ? 'Ingresando...' : 'Entrar al panel' }}
+        </button>
+      </form>
+
+      <a
+        routerLink="/"
+        class="mt-5 block text-center text-sm font-semibold text-white/45 transition hover:text-white"
+      >
+        Volver al inicio
+      </a>
+    </div>
+  </section>
+</main>

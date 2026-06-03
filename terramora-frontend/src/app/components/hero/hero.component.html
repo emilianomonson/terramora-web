@@ -1,0 +1,94 @@
+<section class="relative min-h-screen overflow-hidden bg-terramora-dark">
+  <div 
+    class="absolute inset-0 scale-105 bg-cover bg-center"
+    style="background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop');">
+  </div>
+
+  <!-- Oscurecido general -->
+  <div class="absolute inset-0 bg-black/55"></div>
+
+  <!-- Degradados premium -->
+  <div class="absolute inset-0 bg-gradient-to-r from-[#050510] via-[#050510]/85 to-[#050510]/25"></div>
+  <div class="absolute inset-0 bg-gradient-to-t from-terramora-dark via-terramora-dark/30 to-black/40"></div>
+
+  <!-- Luz violeta izquierda -->
+  <div class="absolute inset-y-0 left-0 w-[58%] bg-gradient-to-r from-terramora-purple/30 via-terramora-purple/10 to-transparent"></div>
+
+  <!-- Glow decorativo -->
+  <div class="absolute left-[-12%] top-[10%] h-[520px] w-[520px] rounded-full bg-terramora-purple/25 blur-[130px]"></div>
+  <div class="absolute bottom-[-18%] right-[15%] h-[460px] w-[460px] rounded-full bg-terramora-purple/10 blur-[150px]"></div>
+
+  <div class="relative z-10 mx-auto flex min-h-screen max-w-7xl flex-col justify-center px-6 pt-36 lg:px-14">
+    <div class="max-w-3xl">
+      <p class="mb-6 flex items-center gap-4 text-xs font-bold uppercase tracking-[0.38em] text-terramora-purple md:text-sm">
+        Encontrá más que una propiedad
+        <span class="hidden h-px w-20 bg-terramora-purple sm:block"></span>
+      </p>
+
+      <h2 class="text-5xl font-black leading-[1.08] tracking-tight md:text-6xl lg:text-7xl">
+        Descubrí lugares
+        <br />
+        excepcionales,
+        <br />
+        <span class="text-terramora-purple">
+          viví tu historia.
+        </span>
+      </h2>
+
+      <p class="mt-7 max-w-xl text-base leading-8 text-white/70 md:text-lg">
+        Te ayudamos a encontrar la propiedad ideal para vos y tu familia.
+        Casas, departamentos, terrenos y oportunidades en los mejores lugares.
+      </p>
+
+      <div class="mt-10 flex flex-col gap-4 sm:flex-row">
+        <button class="group rounded-2xl bg-terramora-purple px-8 py-4 text-base font-bold text-white shadow-2xl shadow-terramora-purple/30 transition duration-300 hover:-translate-y-1 hover:shadow-terramora-purple/50">
+          Explorar propiedades
+          <span class="ml-3 inline-block transition group-hover:translate-x-1">
+            →
+          </span>
+        </button>
+
+        <button class="rounded-2xl border border-white/20 bg-white/5 px-8 py-4 text-base font-bold text-white backdrop-blur-md transition duration-300 hover:-translate-y-1 hover:bg-white/10">
+          Ver terrenos
+        </button>
+      </div>
+    </div>
+
+    <div class="mt-14 w-full max-w-6xl overflow-hidden rounded-3xl border border-white/10 bg-black/45 shadow-2xl shadow-black/40 backdrop-blur-2xl">
+      <div class="grid grid-cols-1 md:grid-cols-[1fr_1fr_1fr_220px]">
+        <div class="border-b border-white/10 p-6 md:border-b-0 md:border-r">
+          <p class="text-xs font-bold uppercase tracking-[0.2em] text-white/45">
+            Ubicación
+          </p>
+          <p class="mt-3 text-lg font-bold text-white">
+            ¿Dónde buscás?
+          </p>
+        </div>
+
+        <div class="border-b border-white/10 p-6 md:border-b-0 md:border-r">
+          <p class="text-xs font-bold uppercase tracking-[0.2em] text-white/45">
+            Tipo de propiedad
+          </p>
+          <p class="mt-3 text-lg font-bold text-white">
+            Casa, Depto, Terreno
+          </p>
+        </div>
+
+        <div class="border-b border-white/10 p-6 md:border-b-0 md:border-r">
+          <p class="text-xs font-bold uppercase tracking-[0.2em] text-white/45">
+            Rango de precio
+          </p>
+          <p class="mt-3 text-lg font-bold text-white">
+            Min - Máx
+          </p>
+        </div>
+
+        <div class="flex items-center p-4">
+          <button class="w-full rounded-2xl bg-terramora-purple px-6 py-4 text-base font-bold text-white shadow-lg shadow-terramora-purple/20 transition hover:opacity-90">
+            Buscar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,118 @@
+<section id="propiedades" class="relative scroll-mt-28 bg-terramora-dark px-6 py-28 lg:px-14">
+  <div class="mx-auto max-w-7xl">
+
+    <!-- Header -->
+    <div class="mb-10 grid gap-8 lg:grid-cols-[1.4fr_0.6fr] lg:items-end">
+      <div>
+        <p class="mb-4 flex items-center gap-4 text-xs font-bold uppercase tracking-[0.35em] text-terramora-purple md:text-sm">
+          Propiedades destacadas
+          <span class="h-px w-16 bg-terramora-purple"></span>
+        </p>
+
+        <h2 class="max-w-4xl text-4xl font-black leading-tight tracking-tight md:text-5xl">
+          Opciones seleccionadas para
+          <span class="text-terramora-purple"> vivir o invertir.</span>
+        </h2>
+      </div>
+
+      <div class="flex lg:justify-end">
+        <a
+          routerLink="/propiedades"
+          class="rounded-2xl border border-white/15 bg-white/5 px-6 py-3.5 text-sm font-bold text-white/85 backdrop-blur-md transition duration-300 hover:-translate-y-1 hover:bg-white/10"
+        >
+          Ver todas las propiedades
+        </a>
+      </div>
+    </div>
+
+    @if (isLoading) {
+      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div class="h-[560px] animate-pulse rounded-[30px] border border-white/10 bg-white/[0.03]"></div>
+        <div class="h-[560px] animate-pulse rounded-[30px] border border-white/10 bg-white/[0.03]"></div>
+        <div class="h-[560px] animate-pulse rounded-[30px] border border-white/10 bg-white/[0.03]"></div>
+      </div>
+    } @else {
+      <!-- Cards dinámicas -->
+      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+
+        @for (property of featuredProperties; track property.id) {
+          <article class="group flex h-full min-h-[560px] flex-col overflow-hidden rounded-[30px] border border-white/10 bg-white/[0.03] shadow-2xl shadow-black/30 backdrop-blur-xl transition duration-300 hover:-translate-y-2 hover:bg-white/[0.06]">
+            
+            <div class="relative h-52 overflow-hidden">
+              <img
+                [src]="getCardImage(property)"
+                [alt]="property.title"
+                loading="lazy"
+                class="h-full w-full object-cover transition duration-700 group-hover:scale-110"
+              />
+
+              <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/15 to-transparent"></div>
+
+              <span class="absolute left-5 top-5 rounded-full bg-terramora-purple px-4 py-2 text-xs font-bold uppercase tracking-wider text-white">
+                {{ formatOperation(property.operation) }}
+              </span>
+
+              <span class="absolute bottom-5 left-5 rounded-full border border-white/15 bg-black/45 px-4 py-2 text-sm font-semibold text-white backdrop-blur-md">
+                {{ formatType(property.type) }}
+              </span>
+            </div>
+
+            <div class="flex flex-1 flex-col p-6">
+              <div class="mb-5 grid min-h-[82px] grid-cols-[1fr_auto] gap-4">
+                <div>
+                  <h3 class="text-xl font-black leading-tight text-white">
+                    {{ property.title }}
+                  </h3>
+
+                  <p class="mt-2 text-sm text-white/55">
+                    {{ property.location }} · {{ property.city }}
+                  </p>
+                </div>
+
+                <p class="text-right text-lg font-black leading-tight text-terramora-purple">
+                  {{ property.currency }}<br />
+                  {{ property.price.toLocaleString('es-AR') }}
+                </p>
+              </div>
+
+              <div class="mb-5 grid grid-cols-3 gap-3 border-y border-white/10 py-4 text-sm text-white/70">
+                <div>
+                  <p class="font-bold text-white">
+                    {{ property.bedrooms || '-' }}
+                  </p>
+                  <p>Dorm.</p>
+                </div>
+
+                <div>
+                  <p class="font-bold text-white">
+                    {{ property.bathrooms || '-' }}
+                  </p>
+                  <p>Baños</p>
+                </div>
+
+                <div>
+                  <p class="font-bold text-white">
+                    {{ property.area }}m²
+                  </p>
+                  <p>Total</p>
+                </div>
+              </div>
+
+              <p class="mb-6 line-clamp-3 text-sm leading-6 text-white/55">
+                {{ property.description }}
+              </p>
+
+              <a
+                [routerLink]="['/propiedades', property.id]"
+                class="mt-auto block w-full rounded-2xl bg-white/8 px-5 py-4 text-center text-sm font-bold text-white transition hover:bg-terramora-purple"
+              >
+                Ver propiedad
+              </a>
+            </div>
+          </article>
+        }
+
+      </div>
+    }
+  </div>
+</section>
