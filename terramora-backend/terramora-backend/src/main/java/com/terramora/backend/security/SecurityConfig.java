@@ -45,11 +45,11 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.GET, "/api/properties/**").permitAll()
 
-                        .requestMatchers(HttpMethod.POST, "/api/uploads/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/uploads/**").authenticated()
 
-                        .requestMatchers(HttpMethod.POST, "/api/properties/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/properties/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/properties/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/properties/**").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/properties/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/properties/**").authenticated()
 
                         .anyRequest().authenticated()
                 )
