@@ -1,44 +1,136 @@
 <header class="fixed left-0 top-0 z-50 w-full px-5 py-4 lg:px-14">
   <div class="mx-auto flex h-[66px] max-w-7xl items-center justify-between rounded-[24px] border border-white/10 bg-[#090914]/80 px-6 shadow-2xl shadow-black/30 backdrop-blur-2xl">
     
-    <a routerLink="/" class="flex items-center">
-        <img 
-            src="/logo-terramora.png" 
-            alt="Terramora Inmobiliaria"
-            class="h-10 w-auto object-contain"
-        />
-    </a>
+    <!-- Logo -->
+    <button
+      type="button"
+      (click)="goToHome()"
+      class="flex items-center"
+      aria-label="Ir al inicio"
+    >
+      <img
+        src="/logo-terramora.png"
+        alt="Terramora Inmobiliaria"
+        class="h-10 w-auto object-contain"
+      />
+    </button>
 
+    <!-- Nav desktop -->
     <nav class="hidden items-center gap-8 text-[13px] font-semibold text-white/70 lg:flex">
-        <a routerLink="/" class="text-white transition hover:text-terramora-purple">
-            Inicio
-        </a>
+      <button
+        type="button"
+        (click)="goToHome()"
+        class="text-white transition hover:text-terramora-purple"
+      >
+        Inicio
+      </button>
 
-        <a routerLink="/propiedades" class="transition hover:text-white">
-             Propiedades
-        </a>
+      <a
+        routerLink="/propiedades"
+        class="transition hover:text-white"
+      >
+        Propiedades
+      </a>
 
-        <a href="#servicios" class="transition hover:text-white">
-            Servicios
-         </a>
+      <button
+        type="button"
+        (click)="goToHomeSection('servicios')"
+        class="transition hover:text-white"
+      >
+        Servicios
+      </button>
 
-        <a href="#terrenos" class="transition hover:text-white">
-            Terrenos
-        </a>
+      <button
+        type="button"
+        (click)="goToHomeSection('terrenos')"
+        class="transition hover:text-white"
+      >
+        Terrenos
+      </button>
 
-         <a href="#" class="transition hover:text-white">
-            Contacto
-        </a>
-</nav>
+      <a
+        routerLink="/contacto"
+        class="transition hover:text-white"
+      >
+        Contacto
+      </a>
+    </nav>
 
     <!-- Botón desktop -->
-    <button class="hidden rounded-2xl border border-terramora-purple/40 bg-white/5 px-5 py-2.5 text-[13px] font-bold text-white/90 transition duration-300 hover:-translate-y-0.5 hover:bg-terramora-purple hover:shadow-lg hover:shadow-terramora-purple/25 lg:block">
+    <button
+      type="button"
+      (click)="openWhatsApp()"
+      class="hidden rounded-2xl border border-terramora-purple/40 bg-white/5 px-5 py-2.5 text-[13px] font-bold text-white/90 transition duration-300 hover:-translate-y-0.5 hover:bg-terramora-purple hover:shadow-lg hover:shadow-terramora-purple/25 lg:block"
+    >
       Agendar asesoría
     </button>
 
     <!-- Botón mobile -->
-    <button class="rounded-xl border border-white/15 bg-white/5 px-4 py-2 text-sm font-semibold text-white lg:hidden">
-      Menú
+    <button
+      type="button"
+      (click)="toggleMenu()"
+      class="rounded-xl border border-white/15 bg-white/5 px-4 py-2 text-sm font-semibold text-white lg:hidden"
+    >
+      @if (isMenuOpen) {
+        Cerrar
+      } @else {
+        Menú
+      }
     </button>
   </div>
+
+  <!-- Menú mobile -->
+  @if (isMenuOpen) {
+    <div class="mx-auto mt-3 max-w-7xl rounded-[24px] border border-white/10 bg-[#090914]/95 p-4 shadow-2xl shadow-black/30 backdrop-blur-2xl lg:hidden">
+      <nav class="grid gap-2 text-sm font-semibold text-white/75">
+        <button
+          type="button"
+          (click)="goToHome()"
+          class="rounded-2xl px-4 py-3 text-left text-white transition hover:bg-white/10 hover:text-terramora-purple"
+        >
+          Inicio
+        </button>
+
+        <a
+          routerLink="/propiedades"
+          (click)="closeMenu()"
+          class="rounded-2xl px-4 py-3 transition hover:bg-white/10 hover:text-white"
+        >
+          Propiedades
+        </a>
+
+        <button
+          type="button"
+          (click)="goToHomeSection('servicios')"
+          class="rounded-2xl px-4 py-3 text-left transition hover:bg-white/10 hover:text-white"
+        >
+          Servicios
+        </button>
+
+        <button
+          type="button"
+          (click)="goToHomeSection('terrenos')"
+          class="rounded-2xl px-4 py-3 text-left transition hover:bg-white/10 hover:text-white"
+        >
+          Terrenos
+        </button>
+
+        <a
+          routerLink="/contacto"
+          (click)="closeMenu()"
+          class="rounded-2xl px-4 py-3 transition hover:bg-white/10 hover:text-white"
+        >
+          Contacto
+        </a>
+
+        <button
+          type="button"
+          (click)="openWhatsApp()"
+          class="mt-2 rounded-2xl border border-terramora-purple/40 bg-white/5 px-5 py-3 text-sm font-bold text-white/90 transition hover:bg-terramora-purple"
+        >
+          Agendar asesoría
+        </button>
+      </nav>
+    </div>
+  }
 </header>
